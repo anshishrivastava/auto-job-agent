@@ -2,6 +2,10 @@
 
 Autonomous daily agent that crawls LinkedIn/Indeed/Glassdoor, scores jobs against your resume using a tiered ATS pipeline, tailors your resume per job, and delivers a digest via Telegram + email.
 
+## Architecture
+
+> 📐 Full diagram: [docs/architecture.drawio](docs/architecture.drawio) — open at [app.diagrams.net](https://app.diagrams.net/)
+
 ## How it works
 
 ```

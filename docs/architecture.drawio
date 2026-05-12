@@ -1,0 +1,135 @@
+<mxfile host="app.diagrams.net" modified="2026-05-12" version="21.0.0">
+  <diagram name="Architecture" id="auto-job-agent-arch">
+    <mxGraphModel dx="1350" dy="580" grid="0" gridSize="10" guides="1" tooltips="1" connect="0" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="580" math="0" shadow="1">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ── Page background ───────────────────────────────────────── -->
+        <mxCell id="2" value="" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#ced4da;pointerEvents=0;" vertex="1" parent="1">
+          <mxGeometry x="10" y="10" width="1370" height="558" as="geometry" />
+        </mxCell>
+
+        <!-- ── Title ────────────────────────────────────────────────── -->
+        <mxCell id="3" value="&lt;b&gt;&lt;font style=&quot;font-size:18px;&quot;&gt;🤖 auto-job-agent&lt;/font&gt;&lt;/b&gt;&amp;nbsp;&amp;nbsp;·&amp;nbsp;&amp;nbsp;&lt;font color=&quot;#555555&quot; style=&quot;font-size:12px;&quot;&gt;Autonomous Daily Job Discovery Agent&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="300" y="18" width="780" height="35" as="geometry" />
+        </mxCell>
+
+        <!-- ── Scheduler ─────────────────────────────────────────────── -->
+        <mxCell id="4" value="&lt;b&gt;⏰ APScheduler&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#777777&quot;&gt;Daily @ 7:00 AM ET&lt;br&gt;or run manually&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="172" width="165" height="82" as="geometry" />
+        </mxCell>
+
+        <!-- ── Sources container ─────────────────────────────────────── -->
+        <mxCell id="6" value="📥 Job Sources" style="swimlane;startSize=28;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;rounded=1;arcSize=5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="205" y="100" width="210" height="265" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="🔗 LinkedIn" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0077b5;fontColor=#ffffff;strokeColor=#005b8a;fontSize=12;fontStyle=1;" vertex="1" parent="6">
+          <mxGeometry x="20" y="38" width="170" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="8" value="🔍 Indeed" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#2164f3;fontColor=#ffffff;strokeColor=#1a4fc2;fontSize=12;fontStyle=1;" vertex="1" parent="6">
+          <mxGeometry x="20" y="86" width="170" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="🏢 Glassdoor" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0caa41;fontColor=#ffffff;strokeColor=#087a30;fontSize=12;fontStyle=1;" vertex="1" parent="6">
+          <mxGeometry x="20" y="134" width="170" height="38" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="JobSpy · dedup MD5(title|co|url)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#aaaaaa;fontColor=#555555;fontSize=10;fontStyle=2;" vertex="1" parent="6">
+          <mxGeometry x="20" y="193" width="170" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- ── 3-Stage Scoring container ─────────────────────────────── -->
+        <mxCell id="12" value="🎯 3-Stage Scoring Pipeline" style="swimlane;startSize=28;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=12;rounded=1;arcSize=5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="435" y="80" width="290" height="305" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="&lt;b&gt;Stage 1 · Keyword Filter&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;~10ms · free · 25% overlap threshold&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;" vertex="1" parent="12">
+          <mxGeometry x="20" y="40" width="250" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="&lt;b&gt;Stage 2 · Embedding Similarity&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;~150ms · free · MiniLM-L6-v2 · top 50%&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;" vertex="1" parent="12">
+          <mxGeometry x="20" y="118" width="250" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="&lt;b&gt;Stage 3 · LLM Score&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;~3s · ~$0.003/job · Claude Haiku · score 0–10&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;" vertex="1" parent="12">
+          <mxGeometry x="20" y="196" width="250" height="65" as="geometry" />
+        </mxCell>
+
+        <!-- ── Score Router ───────────────────────────────────────────── -->
+        <mxCell id="17" value="&lt;b&gt;Score Router&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot;&gt;🟢 ≥ 8.8  →  Tailor + Telegram&lt;br&gt;🟡 6.0–8.8  →  Near-miss email&lt;br&gt;🔴 &lt; 6.0  →  Filtered out&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="745" y="163" width="185" height="118" as="geometry" />
+        </mxCell>
+
+        <!-- ── Tailoring container ───────────────────────────────────── -->
+        <mxCell id="19" value="✍️ Resume Tailoring" style="swimlane;startSize=28;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;rounded=1;arcSize=5;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="950" y="80" width="215" height="245" as="geometry" />
+        </mxCell>
+        <mxCell id="20" value="&lt;b&gt;Resume Tailor&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;Claude Sonnet · keyword inject&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="15" y="40" width="185" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="21" value="&lt;b&gt;PDF Generator&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;WeasyPrint · ATS-friendly HTML→PDF&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="15" y="105" width="185" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="22" value="&lt;b&gt;Referral Messages&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;LinkedIn · InMail · cold email&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;" vertex="1" parent="19">
+          <mxGeometry x="15" y="170" width="185" height="52" as="geometry" />
+        </mxCell>
+
+        <!-- ── Telegram Digest ────────────────────────────────────────── -->
+        <mxCell id="24" value="&lt;b&gt;📱 Telegram Digest&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;Per-job messages · PDF attachments&lt;br&gt;Skip / Force-include inline buttons&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e3f2fd;strokeColor=#1565c0;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="950" y="352" width="215" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ── Near-miss Email ────────────────────────────────────────── -->
+        <mxCell id="26" value="&lt;b&gt;📧 Near-miss Email Digest&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;Gmail SMTP · HTML template&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce4ec;strokeColor=#c62828;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="745" y="352" width="185" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ── SQLite Storage ─────────────────────────────────────────── -->
+        <mxCell id="28" value="&lt;b&gt;💾 SQLite Storage&lt;/b&gt;&lt;font style=&quot;font-size:10px;&quot; color=&quot;#666666&quot;&gt;&amp;nbsp;&amp;nbsp;RunRecord · JobRecord · feedback flags (skip / force-include)&lt;/font&gt;" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="205" y="422" width="750" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ── Cost badge ──────────────────────────────────────────────── -->
+        <mxCell id="29" value="💰 ~$0.05–0.15 / daily run" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f5e9;strokeColor=#388e3c;fontColor=#1b5e20;fontSize=11;fontStyle=1;shadow=1;" vertex="1" parent="1">
+          <mxGeometry x="1183" y="458" width="185" height="38" as="geometry" />
+        </mxCell>
+
+        <!-- ════════════════════════════════════════════════════════════ -->
+        <!-- ARROWS                                                       -->
+        <!-- ════════════════════════════════════════════════════════════ -->
+
+        <!-- Scheduler → Sources -->
+        <mxCell id="e1" value="triggers" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#888888;fontStyle=2;" edge="1" source="4" target="6" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Sources → Scoring -->
+        <mxCell id="e2" value="raw jobs" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#555555;" edge="1" source="6" target="12" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Scoring → Router -->
+        <mxCell id="e3" value="scored jobs" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#555555;" edge="1" source="12" target="17" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Router → Tailoring (above threshold) -->
+        <mxCell id="e4" value="≥ 8.8 · top 8" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=10;fontColor=#2e7d32;fontStyle=1;" edge="1" source="17" target="19" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Router → Near-miss Email -->
+        <mxCell id="e5" value="6.0–8.8" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=10;fontColor=#c62828;fontStyle=1;" edge="1" source="17" target="26" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tailoring → Telegram -->
+        <mxCell id="e6" value="PDFs + referrals" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=10;fontColor=#1565c0;" edge="1" source="19" target="24" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Scoring → Storage -->
+        <mxCell id="e7" value="all scores + run stats" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=10;fontColor=#555555;fontStyle=2;" edge="1" source="12" target="28" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
