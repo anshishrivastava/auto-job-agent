@@ -32,14 +32,26 @@ class ATSScore:
     reasoning: str = ""
     seniority_match: bool = True
     visa_sponsorship: Optional[bool] = None
+    # Prompt 2 — recruiter simulation output
+    interview_verdict: str = "Unknown"   # "Yes" | "Likely" | "Unlikely" | "No"
+    interview_probability: int = 0       # 0–100 estimated % chance of interview
+
+
+@dataclass
+class RecruiterTarget:
+    role: str                            # e.g. "Engineering Manager", "Tech Recruiter"
+    search_tip: str                      # LinkedIn search hint
+    connection_message: str              # ≤300 chars
+    inmail: str                          # 3–4 sentences
 
 
 @dataclass
 class ReferralMessages:
-    connection_request: str              # ≤300 chars for LinkedIn
+    connection_request: str              # ≤300 chars for LinkedIn (generic)
     inmail: str
     cold_email_subject: str
     cold_email_body: str
+    recruiter_targets: list[RecruiterTarget] = field(default_factory=list)  # Prompt 3
 
 
 @dataclass
@@ -50,6 +62,7 @@ class TailoredApplication:
     changes_made: list[str]
     referral_messages: ReferralMessages
     final_ats_score: float               # re-scored after tailoring
+    cover_letter: str = ""              # Prompt 4
 
 
 @dataclass

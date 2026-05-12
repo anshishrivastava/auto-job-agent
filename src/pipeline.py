@@ -17,7 +17,7 @@ from src.sources.jobspy_source import JobSpySource
 from src.storage.database import init_db, save_jobs, save_run
 from src.tailoring.pdf_generator import generate_pdf
 from src.tailoring.referral import generate_referral_messages
-from src.tailoring.resume_tailor import tailor_resume, verify_ats_improvement
+from src.tailoring.resume_tailor import generate_cover_letter, tailor_resume, verify_ats_improvement
 
 logger = logging.getLogger(__name__)
 
@@ -89,6 +89,7 @@ def run_pipeline(dry_run: bool = False) -> RunResult:
         tailored_resume, changes = tailor_resume(job, score, master_resume)
         pdf_path = generate_pdf(tailored_resume, job.title, job.company, job.id)
         final_score = verify_ats_improvement(job, tailored_resume, score.overall_score)
+        cover_letter = generate_cover_letter(job, score, tailored_resume)
         referral = generate_referral_messages(job, tailored_resume, score.present_keywords)
 
         applications.append(TailoredApplication(
@@ -98,6 +99,7 @@ def run_pipeline(dry_run: bool = False) -> RunResult:
             changes_made=changes,
             referral_messages=referral,
             final_ats_score=final_score,
+            cover_letter=cover_letter,
         ))
 
     # ── 4. Save to DB ──────────────────────────────────────────────────────

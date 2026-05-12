@@ -8,7 +8,7 @@ from dataclasses import asdict
 
 import anthropic
 
-from src.models.schemas import JobListing, ReferralMessages
+from src.models.schemas import JobListing, RecruiterTarget, ReferralMessages
 
 logger = logging.getLogger(__name__)
 
@@ -23,29 +23,66 @@ def _client() -> anthropic.Anthropic:
 
 
 _SYSTEM = """\
-You are a professional career coach writing outreach messages for a job applicant.
-Write concise, authentic messages that highlight specific alignment between the candidate and role.
-Avoid generic phrases like "I am excited" or "I would be a great fit".
-Return ONLY valid JSON, no markdown.
+Act as a networking strategist who helps job seekers get interviews through direct outreach — \
+not just applications. You identify the right people to contact at a company and craft messages \
+that are specific, confident, and human — never generic or sycophantic.
+
+Rules:
+- Never write "I am excited" / "I would be a great fit" / "I hope this finds you well"
+- Every message must reference something specific from the candidate's background AND the role
+- Connection requests must be under 280 characters
+- Return ONLY valid JSON, no markdown
 """
 
 _PROMPT = """\
 ## Candidate
 Name: {name}
 Current Role: {current_role}
-Top strengths relevant to this job: {strengths}
+Strongest relevant experience: {strengths}
 
 ## Target Job
 Title: {title}
 Company: {company}
-Key requirements: {requirements}
+Key requirements (first 120 words of JD): {requirements}
 
-Generate three outreach messages and return this exact JSON:
+## Your Task
+Identify 3 people the candidate should reach out to on LinkedIn to maximise interview chances. \
+Choose roles like: the hiring manager for this team, a technical recruiter at {company}, \
+and a senior engineer or team lead in the relevant org.
+
+For each person, provide a LinkedIn search tip to find them, plus a connection message and InMail.
+
+Also generate a cold email for when LinkedIn fails.
+
+Return exactly this JSON:
 {{
-  "connection_request": "<LinkedIn connection request, max 280 chars, first-person, specific>",
-  "inmail": "<LinkedIn InMail, 3-4 sentences, reference specific JD requirements and candidate achievements>",
-  "cold_email_subject": "<email subject line, under 60 chars>",
-  "cold_email_body": "<3 short paragraphs: hook referencing the role, 2 specific achievements relevant to JD, clear ask>"
+  "recruiter_targets": [
+    {{
+      "role": "<job title to search for on LinkedIn, e.g. 'Engineering Manager, ML Platform'>",
+      "search_tip": "<how to find this person, e.g. 'Search LinkedIn: {company} + ML Manager'>",
+      "connection_message": "<max 280 chars, first-person, reference one specific JD requirement \
+and one specific candidate achievement>",
+      "inmail": "<3-4 sentences: open with the specific role + why you're reaching out, \
+cite one concrete achievement that maps to their team's work, end with a specific ask>"
+    }},
+    {{
+      "role": "<second target>",
+      "search_tip": "<search tip>",
+      "connection_message": "<max 280 chars>",
+      "inmail": "<3-4 sentences>"
+    }},
+    {{
+      "role": "<third target>",
+      "search_tip": "<search tip>",
+      "connection_message": "<max 280 chars>",
+      "inmail": "<3-4 sentences>"
+    }}
+  ],
+  "connection_request": "<fallback LinkedIn connection request, max 280 chars>",
+  "inmail": "<fallback InMail, 3-4 sentences>",
+  "cold_email_subject": "<subject, under 60 chars, specific — not 'Following up'>",
+  "cold_email_body": "<3 short paragraphs: hook with specific role context, \
+2 achievements that directly map to JD requirements, clear ask with one easy next step>"
 }}
 """
 
@@ -74,7 +111,7 @@ def generate_referral_messages(
     try:
         response = _client().messages.create(
             model="claude-haiku-4-5-20251001",
-            max_tokens=600,
+            max_tokens=1200,
             system=_SYSTEM,
             messages=[{"role": "user", "content": prompt}],
         )
@@ -82,11 +119,23 @@ def generate_referral_messages(
         if raw.startswith("```"):
             raw = raw.split("\n", 1)[1].rsplit("```", 1)[0]
         data = json.loads(raw)
+
+        targets = [
+            RecruiterTarget(
+                role=t.get("role", ""),
+                search_tip=t.get("search_tip", ""),
+                connection_message=t.get("connection_message", "")[:300],
+                inmail=t.get("inmail", ""),
+            )
+            for t in data.get("recruiter_targets", [])
+        ]
+
         return ReferralMessages(
             connection_request=data.get("connection_request", "")[:300],
             inmail=data.get("inmail", ""),
             cold_email_subject=data.get("cold_email_subject", f"Re: {job.title} at {job.company}"),
             cold_email_body=data.get("cold_email_body", ""),
+            recruiter_targets=targets,
         )
     except Exception as exc:
         logger.warning("Referral generation failed for '%s': %s", job.title, exc)

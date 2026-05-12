@@ -24,31 +24,45 @@ def _client() -> anthropic.Anthropic:
 
 
 _SYSTEM = """\
-You are an expert ATS (Applicant Tracking System) evaluator and career coach.
-Given a job description and a candidate's resume, score the match and return ONLY valid JSON.
-No markdown, no explanation outside the JSON object.
+Act as a recruiter hiring for the role described below. Your job is to decide — honestly and \
+specifically — whether you would move this candidate to an interview.
+
+You are experienced, direct, and do not use filler language. You evaluate based on:
+- Actual experience depth vs. what the role requires
+- Seniority signal (titles, scope, team size, impact)
+- Skill overlap with the specific tech stack and domain
+- Red flags (job-hopping, gaps, inflated language, mismatch)
+
+Return ONLY valid JSON — no markdown, no text outside the JSON object.
 """
 
 _PROMPT_TEMPLATE = """\
 ## Job Description
 {jd}
 
-## Candidate Resume (plain text)
+## Candidate Resume
 {resume}
 
-## Task
-Score this candidate for this specific role. Return exactly this JSON schema:
+## Your Task
+You are the recruiter for this exact role. Assess whether you would invite this candidate to \
+an interview. Be specific — reference actual lines from the resume and JD.
+
+Return exactly this JSON:
 {{
+  "would_interview": <true|false>,
+  "interview_verdict": "<Yes | Likely | Unlikely | No>",
+  "interview_probability": <integer 0-100, your estimated % chance this candidate gets an interview>,
   "overall_score": <float 0-10>,
   "keyword_match_score": <float 0-10>,
-  "skills_fit_score": <float 0-10>,
   "experience_relevance_score": <float 0-10>,
   "seniority_match_score": <float 0-10>,
-  "missing_keywords": [<top 5 keywords in JD not in resume>],
-  "present_keywords": [<top 5 strong keyword matches>],
+  "missing_keywords": [<up to 6 specific skills/terms the JD needs that the resume lacks>],
+  "present_keywords": [<up to 6 strong matches between JD requirements and resume>],
   "seniority_match": <true|false>,
   "visa_sponsorship_mentioned": <true|false|null>,
-  "reasoning": "<2-3 sentence explanation of the score>"
+  "reasoning": "<3-4 sentences: what makes this candidate strong or weak for THIS role, \
+citing specific evidence from both the JD and resume. If no, explain exactly what is missing \
+and what would change your decision.>"
 }}
 """
 
@@ -112,4 +126,6 @@ def llm_score(
         reasoning=data.get("reasoning", ""),
         seniority_match=bool(data.get("seniority_match", True)),
         visa_sponsorship=data.get("visa_sponsorship_mentioned"),
+        interview_verdict=data.get("interview_verdict", "Unknown"),
+        interview_probability=int(data.get("interview_probability", 0)),
     )

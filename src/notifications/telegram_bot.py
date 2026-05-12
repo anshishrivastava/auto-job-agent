@@ -51,6 +51,10 @@ def send_digest(applications: list[TailoredApplication], run_stats: dict):
         job = app.job
         score = app.final_ats_score
         emoji = _score_emoji(score)
+        verdict = app.score.interview_verdict
+        prob = app.score.interview_probability
+
+        verdict_line = f"\n🎯 *Recruiter verdict: {verdict}* ({prob}% interview chance)"
 
         missing_str = ""
         if app.score.missing_keywords:
@@ -60,16 +64,23 @@ def send_digest(applications: list[TailoredApplication], run_stats: dict):
         if app.changes_made:
             changes_str = f"\n✏️ _{'; '.join(app.changes_made[:2])}_"
 
+        # First recruiter target for quick outreach
+        target_str = ""
+        if app.referral_messages.recruiter_targets:
+            t = app.referral_messages.recruiter_targets[0]
+            target_str = f"\n\n👤 *Reach out to:* {t.role}\n🔍 _{t.search_tip}_\n`{t.connection_message[:200]}`"
+
         msg = (
             f"{emoji} *{i}. {job.title}* — {job.company}\n"
             f"📍 {job.location}"
             + (f" | 💰 {job.salary}" if job.salary else "")
             + (f" | 🕒 {_posted_ago(job.posted_at)}" if job.posted_at else "")
-            + f"\n📊 ATS Score: *{score}/10*"
-            + f"\n_{app.score.reasoning[:120]}_"
+            + f"\n📊 ATS: *{score}/10*"
+            + verdict_line
+            + f"\n_{app.score.reasoning[:160]}_"
             + missing_str
             + changes_str
-            + f"\n\n📎 Referral:\n`{app.referral_messages.connection_request[:200]}`"
+            + target_str
         )
 
         inline_keyboard = {
