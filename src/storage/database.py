@@ -16,7 +16,7 @@ from src.models.schemas import ATSScore, JobListing, TailoredApplication
 
 logger = logging.getLogger(__name__)
 
-DB_PATH = Path(__file__).resolve().parents[3] / "output" / "jobs.db"
+DB_PATH = Path(__file__).resolve().parents[2] / "output" / "jobs.db"
 
 
 class Base(DeclarativeBase):

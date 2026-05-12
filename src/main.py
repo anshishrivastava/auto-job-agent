@@ -15,7 +15,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from rich.logging import RichHandler
 
-load_dotenv(Path(__file__).resolve().parents[2] / ".env")
+load_dotenv(Path(__file__).resolve().parents[1] / ".env")
 
 
 def _setup_logging():

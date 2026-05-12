@@ -56,17 +56,19 @@ class JobSpySource(JobDataSource):
         for keyword in keywords:
             for location in locations:
                 try:
-                    df = scrape_jobs(
+                    scrape_kwargs = dict(
                         site_name=self.SITES,
                         search_term=keyword,
                         location=location,
                         results_wanted=results_per_source,
                         hours_old=hours_old,
                         job_type=job_types[0] if job_types else None,
-                        is_remote=is_remote,
                         linkedin_fetch_description=True,
                         verbose=0,
                     )
+                    if is_remote is not None:
+                        scrape_kwargs["is_remote"] = is_remote
+                    df = scrape_jobs(**scrape_kwargs)
                 except Exception as exc:
                     logger.warning("jobspy scrape failed for '%s'/'%s': %s", keyword, location, exc)
                     continue

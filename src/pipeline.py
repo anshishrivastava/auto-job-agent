@@ -21,8 +21,8 @@ from src.tailoring.resume_tailor import generate_cover_letter, tailor_resume, ve
 
 logger = logging.getLogger(__name__)
 
-CONFIG_PATH = Path(__file__).resolve().parents[2] / "config" / "config.yaml"
-RESUME_PATH = Path(__file__).resolve().parents[2] / "config" / "resume.json"
+CONFIG_PATH = Path(__file__).resolve().parents[1] / "config" / "config.yaml"
+RESUME_PATH = Path(__file__).resolve().parents[1] / "config" / "resume.json"
 
 
 def _load_config() -> dict:
