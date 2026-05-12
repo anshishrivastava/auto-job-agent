@@ -1,0 +1,27 @@
+preferences:
+  job_keywords:
+    - "Senior Machine Learning Engineer"
+    - "Staff ML Engineer"
+    - "AI Engineer"
+    # Add more roles you're targeting
+
+  locations:
+    - "New York, NY"
+    - "Remote"
+    - "San Francisco, CA"
+    # Add or replace with your preferred locations
+
+  min_salary: 100000          # Annual USD salary floor
+  job_types:
+    - "fulltime"
+  remote_filter: null          # null = all; "remote" | "hybrid" | "onsite"
+  hours_old: 24                # Only fetch jobs posted within this many hours
+  results_per_source: 30
+  requires_visa_sponsorship: false
+
+  ats_threshold: 8.0           # Score >= this → Telegram digest (0–10)
+  near_miss_min: 6.0           # Score in [near_miss_min, ats_threshold) → email digest
+  top_k: 8                     # Max jobs to tailor resumes for per run
+
+  run_time: "07:00"            # Daily run time (24h format)
+  timezone: "America/New_York" # pytz timezone string

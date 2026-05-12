@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Arial", sans-serif; font-size: 10.5pt; color: #111; line-height: 1.4; padding: 28px 36px; }
+  h1 { font-size: 20pt; text-align: center; letter-spacing: 1px; margin-bottom: 2px; }
+  .contact { text-align: center; font-size: 9.5pt; color: #333; margin-bottom: 12px; }
+  .contact a { color: #333; text-decoration: none; }
+  hr { border: none; border-top: 1.5px solid #111; margin: 8px 0; }
+  .section-title { font-size: 11pt; font-weight: bold; text-transform: uppercase;
+                   letter-spacing: 0.8px; margin-top: 10px; margin-bottom: 4px; border-bottom: 0.5px solid #aaa; }
+  .job-header { display: flex; justify-content: space-between; margin-top: 7px; }
+  .job-title { font-weight: bold; font-size: 10.5pt; }
+  .job-meta { font-style: italic; font-size: 9.5pt; color: #444; }
+  .duration { font-size: 9.5pt; color: #333; }
+  ul { padding-left: 16px; margin-top: 3px; }
+  li { margin-bottom: 2px; font-size: 10pt; }
+  .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 20px; margin-top: 4px; }
+  .skill-row { font-size: 9.5pt; }
+  .skill-label { font-weight: bold; }
+  .recognition-item { font-size: 9.5pt; margin-top: 2px; }
+  .edu-row { display: flex; justify-content: space-between; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<h1>{{ resume.personal.name }}</h1>
+<div class="contact">
+  {{ resume.personal.location }} &nbsp;|&nbsp;
+  <a href="mailto:{{ resume.personal.email }}">{{ resume.personal.email }}</a> &nbsp;|&nbsp;
+  {{ resume.personal.phone }}
+  {% if resume.personal.linkedin %} &nbsp;|&nbsp; {{ resume.personal.linkedin }}{% endif %}
+  {% if resume.personal.github %} &nbsp;|&nbsp; {{ resume.personal.github }}{% endif %}
+</div>
+<hr>
+
+<div class="section-title">Professional Summary</div>
+<p style="font-size:10pt; margin-top:4px;">{{ resume.summary }}</p>
+
+<div class="section-title">Professional Experience</div>
+{% for exp in resume.experience %}
+<div class="job-header">
+  <span class="job-title">{{ exp.title }}</span>
+  <span class="duration">{{ exp.duration }}</span>
+</div>
+<div class="job-meta">{{ exp.company }}{% if exp.location %} | {{ exp.location }}{% endif %}</div>
+<ul>
+  {% for bullet in exp.bullets %}
+  <li>{{ bullet }}</li>
+  {% endfor %}
+</ul>
+{% endfor %}
+
+<div class="section-title">Technical Skills</div>
+<div class="skills-grid">
+  {% for group, items in resume.skills.items() %}
+  <div class="skill-row">
+    <span class="skill-label">{{ group | replace("_", " ") | title }}:</span>
+    {{ items | join(", ") }}
+  </div>
+  {% endfor %}
+</div>
+
+{% if resume.recognition %}
+<div class="section-title">Professional Standing & Recognition</div>
+{% for item in resume.recognition %}
+<div class="recognition-item">• {{ item }}</div>
+{% endfor %}
+{% endif %}
+
+<div class="section-title">Education</div>
+{% for edu in resume.education %}
+<div class="edu-row">
+  <span><strong>{{ edu.degree }}</strong> — {{ edu.school }}{% if edu.location %}, {{ edu.location }}{% endif %}</span>
+  <span>{{ edu.year }}</span>
+</div>
+{% endfor %}
+
+</body>
+</html>

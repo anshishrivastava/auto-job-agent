@@ -1,0 +1,75 @@
+{
+  "personal": {
+    "name": "Jane Smith",
+    "email": "jane.smith@example.com",
+    "phone": "+1 555-000-1234",
+    "linkedin": "linkedin.com/in/janesmith",
+    "github": "github.com/janesmith",
+    "location": "San Francisco, CA 94105"
+  },
+  "summary": "Senior Machine Learning Engineer with 7+ years of experience in scalable AI infrastructure, generative AI, and MLOps. Proven track record of shipping production ML systems at high-growth companies. Strong background in LLM fine-tuning, RAG architectures, and real-time inference pipelines.",
+  "experience": [
+    {
+      "title": "Senior Machine Learning Engineer",
+      "company": "Acme AI",
+      "location": "San Francisco, CA",
+      "duration": "Jan 2024 – Present",
+      "bullets": [
+        "Led development of a multi-agent RAG system serving 5M+ daily queries with p99 latency under 200ms.",
+        "Designed and shipped an LLM fine-tuning pipeline on AWS SageMaker, reducing hallucination rate by 40%.",
+        "Drove cross-functional collaboration with product and data teams to define model evaluation standards."
+      ],
+      "skills_used": ["LLM", "RAG", "AWS SageMaker", "Python", "Agents", "MLOps"]
+    },
+    {
+      "title": "Machine Learning Engineer",
+      "company": "DataCo",
+      "location": "New York, NY",
+      "duration": "June 2021 – Dec 2023",
+      "bullets": [
+        "Built embedding-based retrieval system (EBR) for product search, improving click-through rate by 18%.",
+        "Automated ML model deployment with CI/CD pipelines using Docker, Airflow, and AWS Lambda.",
+        "Reduced inference costs by $25K/month by migrating batch scoring jobs from GPU to optimized CPU clusters."
+      ],
+      "skills_used": ["Python", "Spark", "Airflow", "AWS Lambda", "Docker", "Embedding-based Retrieval"]
+    },
+    {
+      "title": "Data Scientist",
+      "company": "StartupXYZ",
+      "location": "Boston, MA",
+      "duration": "Aug 2018 – May 2021",
+      "bullets": [
+        "Developed propensity-to-buy models using gradient boosting, increasing conversion by 12%.",
+        "Built real-time feature pipelines using Kafka and Spark Streaming for personalization at scale.",
+        "Designed A/B testing framework adopted by the entire analytics team."
+      ],
+      "skills_used": ["Python", "Kafka", "Spark Streaming", "SQL", "scikit-learn", "A/B Testing"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "M.S. in Computer Science",
+      "school": "Stanford University",
+      "location": "Stanford, CA",
+      "year": "May 2018"
+    },
+    {
+      "degree": "B.S. in Mathematics",
+      "school": "University of Michigan",
+      "location": "Ann Arbor, MI",
+      "year": "May 2016"
+    }
+  ],
+  "skills": {
+    "genai_agents": ["LLM Fine-tuning", "RAG Systems", "Agentic Workflows", "Prompt Engineering", "AWS Bedrock", "OpenAI API"],
+    "ml_personalization": ["Recommender Systems", "Ranking & Retrieval", "Embedding-based Retrieval (EBR)", "LTV Modeling"],
+    "production_systems": ["Scalable ML Infrastructure", "Low-latency Inference", "CI/CD", "Docker", "Kubernetes", "Model Monitoring"],
+    "languages_data": ["Python", "SQL", "Scala", "Spark", "Kafka", "Airflow", "Redshift"],
+    "cloud": ["AWS (SageMaker, Lambda, ECS, Glue, Bedrock)", "GCP"]
+  },
+  "recognition": [
+    "Speaker – NeurIPS 2023 workshop on production LLM systems",
+    "Open Source Contributor – LangChain and FAISS, focused on retrieval performance",
+    "AWS Certified Machine Learning Specialty"
+  ]
+}
